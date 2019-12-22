@@ -243,7 +243,7 @@ def setup_output(paths, template):
     ns.OUTPUT_SET = []
     ns.filesObj = {}
     ns.filesMap = {
-        "Results": paths.resultDir + 'Results_' + timeNowHrs + '.csv',
+        "Results": paths.resultDir + 'Results.csv',
         "MultiMarked": paths.manualDir + 'MultiMarkedFiles_.csv',
         "Errors": paths.manualDir + 'ErrorFiles_.csv',
         "BadRollNos": paths.manualDir + 'BadRollNoFiles_.csv'
@@ -266,7 +266,6 @@ def setup_output(paths, template):
 
 ''' TODO: Refactor into new process flow.
     Currently I have no idea what this does so I left it out'''
-
 
 def preliminary_check():
     filesCounter = 0
@@ -426,11 +425,6 @@ def process_files(omr_files, template, args, out):
     else:
         print("\nTotal script time :", timeChecking, "seconds")
 
-    if(showimglvl <= 1):
-        # TODO: colorama this
-        print(
-            "\nTip: To see some awesome visuals, open globals.py and increase 'showimglvl'")
-
     evaluate_correctness(template, out)
 
     # Use this data to train as +ve feedback
@@ -488,8 +482,6 @@ def evaluate_correctness(template, out):
             print("Missing File-ids: ",
                   list(x_df.index.difference(intersection)))
 
-
-timeNowHrs = strftime("%I%p", localtime())
 
 # construct the argument parse and parse the arguments
 argparser = argparse.ArgumentParser()
