@@ -73,6 +73,10 @@ qtype_data = {
         'vals': ['A', 'B', 'C', 'D', 'E'],
         'orient': 'H'
     },
+    'QTYPE_COUNT': {
+        'vals': ['A', 'B', 'C', 'D', 'E'],
+        'orient': 'H'
+    }
     # Add custom question types here-
     # ,
     # 'QTYPE_MCQ_COL_5A':{'vals' : ['A']*5, 'orient':'V'},

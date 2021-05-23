@@ -988,7 +988,7 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
                 #_, _, _ = getGlobalThreshold(QStripvals, "QStrip Plot", plotShow=False, sortInPlot=True)
                 #hist = getPlotImg()
                 #show("QStrip "+qBoxPts[0].qNo, hist, 0, 1)
-                allQVals.extend(QStripvals) # 
+                allQVals.extend(QStripvals) # 1 column of 1 QBlock
                 
                 print(totalQStripNo, qBoxPts[0].qNo, QStdVals[len(QStdVals)-1])
                 totalQStripNo += 1
@@ -1058,13 +1058,7 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
                     # shifted
                     x, y = (pt.x + QBlock.shift, pt.y)
                     boxval0 = allQVals[totalQBoxNo]
-                    
-                    if pt.qType == 'QTYPE_COUNT':
-                        detected = boxval0 < 200
-                    else:
-                        detected = perQStripThreshold > boxval0 # <<<<<<< DETECTION
-
-                    print('Detection: ', pt.qNo, '/', pt.val, boxval0, perQStripThreshold)
+                    detected = perQStripThreshold > boxval0 # <<<<<<< DETECTION
 
                     # TODO: add an option to select PLUS SIGN RESPONSE READING
                     # extra_check_rects = []
@@ -1092,21 +1086,8 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
                                       config.CLR_GRAY,
                                       -1)
 
-                    # TODO My Modifications Start Here
-                    if detected and pt.qType == 'QTYPE_COUNT':
-                        q, val = pt.qNo, 0
-                        cv2.putText(final_marked,
-                                    q + ': ' + str(val),
-                                    (x, y),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 
-                                    config.TEXT_SIZE,
-                                    (20, 20, 10),
-                                    int(1 + 3.5*config.TEXT_SIZE))
-                        if q in OMRresponse:
-                            OMRresponse[q] = OMRresponse[q] + 1
-                        else:
-                            OMRresponse[q] = 1
-                    elif detected and pt.qType != 'QTYPE_COUNT': # this code composes the summary of responses for each question!
+                    # TODO Make this part useful! (Abstract visualizer to check status)
+                    if (detected): # this code composes the summary of responses for each question!
                         q, val = pt.qNo, str(pt.val)
                         cv2.putText(final_marked,
                                     q + ': ' + val,
@@ -1202,7 +1183,7 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
         return OMRresponse, final_marked, multimarked, multiroll
         # final_marked: the image to show which bubbles are filled, final_align: the image to show the recognition area after aligned
 
-    except ModuleNotFoundError as e:
+    except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print("Error from readResponse: ", e)
