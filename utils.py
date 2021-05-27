@@ -1,4 +1,10 @@
 """
+The OMR code modified by me is at the readResponse function
+Search for QTYPE_COUNT in the code! 
+
+"""
+
+"""
 
 Designed and Developed by-
 Udayraj Deshmukh
@@ -176,12 +182,11 @@ def drawTemplateLayout(
                 if(draw_qvals):
                     rect = [y, y + boxH, x, x + boxW]
                     cv2.putText(final_align,
-                                '%d'% (cv2.mean(img[rect[0]:rect[1], rect[2]:rect[3]])[0]),
+                                '{:s}:{:d}'.format(pt.qNo,round(cv2.mean(img[rect[0]:rect[1], rect[2]:rect[3]])[0])),
                                 (rect[2] + 2, rect[0] + (boxH * 2) // 3),
-                                cv2.FONT_HERSHEY_SIMPLEX, 
-                                0.6, 
-                                config.CLR_BLACK,
-                                2)
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5, 
+                                config.CLR_BLACK, 2)
         if(shifted):
             cv2.putText(final_align,
                         's%s'% (shift), 
@@ -988,9 +993,13 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
                 #_, _, _ = getGlobalThreshold(QStripvals, "QStrip Plot", plotShow=False, sortInPlot=True)
                 #hist = getPlotImg()
                 #show("QStrip "+qBoxPts[0].qNo, hist, 0, 1)
-                allQVals.extend(QStripvals) # 
+                allQVals.extend(QStripvals)
+
                 
-                print(totalQStripNo, qBoxPts[0].qNo, QStdVals[len(QStdVals)-1])
+                # QStripvals contains the intensity of a question strip,
+                # which is the column of answer A of question 1, 2, 3, 4... in the same block
+                
+                print('STDDEV QSTDVALS / QSTRIP: ', totalQStripNo, qBoxPts[0].qNo, '->', qBoxPts[-1].qNo, qBoxPts[0].val, QStdVals[len(QStdVals)-1])
                 totalQStripNo += 1
             allQStdVals.extend(QStdVals)
         # print("Begin getGlobalThresholdStd")
@@ -1065,6 +1074,18 @@ def readResponse(template, image, name, savedir=None, autoAlign=False):
                         detected = perQStripThreshold > boxval0 # <<<<<<< DETECTION
 
                     print('Detection: ', pt.qNo, '/', pt.val, boxval0, perQStripThreshold)
+
+
+
+                    # Thinh's Annotation <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    # The idea is perQStripThreshold is it takes a vertical strip, form an intensity distribution
+                    # and calculate the threshold corresponding to the FIRST JUMP as the threshold that separates white from black
+                    # boxval0 is the intensity of the current bubble
+                    # Note that it iterates by columns first rather than by rows, so all questions with answer A will be counted first, then to B,...
+                    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
 
                     # TODO: add an option to select PLUS SIGN RESPONSE READING
                     # extra_check_rects = []
